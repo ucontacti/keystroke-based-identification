@@ -1,0 +1,14 @@
+<html>
+
+<head>
+    <script type="text/javascript" src="{{ url_for('static', filename = 'hello.js') }}"></script>
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"
+        integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+</head>
+
+<body>
+    <input type="button" onclick="sayHello()" value="Say Hello" />
+    <input id="in_text" type="text" onkeydown="keyDown(event)" onkeyup="keyUp(event)" />
+</body>
+
+</html>
