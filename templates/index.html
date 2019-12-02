@@ -9,6 +9,11 @@
 
 <body>
 
+    <p>Welcome to the keystroke-based page. This product is in the training stage so we need more data. 
+        After enough data is gather we will train model and test section will be active. </p>
+    <p>The input should be: <b>micheal mock</b></p>
+    <p>Keep in mind currently our test is all lower case.</p>
+
     <! –– Button wrapper ––>
     <div id = "wrapper">
         <input type="button" class="button1" onclick="call_train()" value="Add your typing" />
@@ -19,10 +24,15 @@
     <! –– Input text ––>
     <input id="in_text" style="display:none;" type="text" onkeydown="keyDown(event)" onkeyup="keyUp(event)" />
     
+    <! –– license text ––>
+    <p>This work is a collaboration between Saleh Daghigh and Mahdi Paktinat under supervision of Dr. Michael Mock.</p>
+
+
     <! –– Snackbars ––>
     <div id="auth_snackbar">Authentication soon available ...</div>
     <div id="done_snackbar">Your typing data is submitted ...</div>
     <div id="error_snackbar">Wrong key entered ...</div>
+    
 </body>
 
 </html>
