@@ -1,4 +1,6 @@
 import json
+from Modules.learn import trainer
+from Modules.send_data import save_data
 from flask import Flask, render_template, request
 app = Flask(__name__)
 
@@ -15,11 +17,22 @@ def add_to_csv(down, up):
 def index():
    return render_template("index.html")
 
-@app.route("/postmethod", methods = ['POST'])
-def get_post_javascript_data():
+@app.route("/post_data", methods = ['POST'])
+def get_post_data():
     js_d_data = request.form['down_time_data']
     js_u_data = request.form['up_time_data']
     add_to_csv(json.loads(js_d_data), json.loads(js_u_data))
+    return json.dumps({'success':True}), 200, {'ContentType':'application/json'} 
+
+@app.route("/post_test", methods = ['POST'])
+def get_post_test():
+    js_d_data = request.form['down_time_data']
+    js_u_data = request.form['up_time_data']
+    result = trainer(json.loads(js_d_data), json.loads(js_u_data))
+    return json.dumps({'success':True}), 200, {'ContentType':'application/json'} 
+@app.route("/post_send_data", methods = ['POST'])
+def get_post_send_data():
+    result = save_data()
     return json.dumps({'success':True}), 200, {'ContentType':'application/json'} 
 
 if __name__ == '__main__':

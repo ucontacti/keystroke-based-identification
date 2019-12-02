@@ -1,2 +1,2 @@
-def classify(data):
-    return "Not defined yet"
+def trainer(dataUp, Down, person = ""):
+    return 0

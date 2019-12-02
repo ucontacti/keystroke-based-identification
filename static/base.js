@@ -3,10 +3,21 @@ var atDown = 0
 var atUp = 0
 var timeDown = [];
 var timeUp = [];
+var test = false;
 
+function call_train() {
+    document.getElementById("in_text").style.display = "block";
+    test = false;
+}
 
-function sayHello() {
-    alert("Hello World!");
+function call_test() {
+    document.getElementById("in_text").style.display = "none";
+    test = true;
+}
+
+function send_data() {
+    document.getElementById("in_text").style.display = "none";
+    $.post("/post_send_data");
 }
 
 function keyDown(event) {
@@ -19,8 +30,7 @@ function keyDown(event) {
         (keycode > 95 && keycode < 112) || // numpad keys
         (keycode > 185 && keycode < 193) || // ;=,-./` (in order)
         (keycode > 218 && keycode < 223);   // [\]' (in order)
-    if (valid)
-    {
+    if (valid) {
         if (input.charAt(atDown) == key) {
             timeDown.push(performance.now());
             atDown++;
@@ -57,10 +67,18 @@ function keyUp(event) {
         }
         if (atUp == input.length) {
             alert("Done!");
-            $.post( "/postmethod", {
-                down_time_data: JSON.stringify(timeDown),
-                up_time_data: JSON.stringify(timeUp)
-            });
+            if (test) {
+                $.post("/post_test", {
+                    down_time_data: JSON.stringify(timeDown),
+                    up_time_data: JSON.stringify(timeUp)
+                });
+            }
+            else {
+                $.post("/post_data", {
+                    down_time_data: JSON.stringify(timeDown),
+                    up_time_data: JSON.stringify(timeUp)
+                });
+            }
             reset();
         }
     }
@@ -68,11 +86,11 @@ function keyUp(event) {
 
 function wrong() {
     alert("Something went wrong!");
-    document.getElementById("in_text").value = "";
     reset();
 }
 
-function reset(){
+function reset() {
+    document.getElementById("in_text").value = "";
     atDown = atUp = 0;
     timeDown = timeUp = []
 }
