@@ -2,15 +2,27 @@
 
 <head>
     <script type="text/javascript" src="{{ url_for('static', filename = 'base.js') }}"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename = 'css/main.css') }}">
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"
         integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
 </head>
 
 <body>
-    <input type="button" onclick="call_train()" value="Add your typing" />
-    <input type="button" onclick="call_test()" value="Classify" />
-    <input type="button" onclick="send_data()" value="Send training set" />
+
+    <! –– Button wrapper ––>
+    <div id = "wrapper">
+        <input type="button" class="button1" onclick="call_train()" value="Add your typing" />
+        <input type="button" class="button2" onclick="call_test()" value="Authenticate" />
+        <a href="/download/time.csv" target="blank"><input type="button" class="button3" value="Download CSV data" /></a>
+    </div>
+
+    <! –– Input text ––>
     <input id="in_text" style="display:none;" type="text" onkeydown="keyDown(event)" onkeyup="keyUp(event)" />
+    
+    <! –– Snackbars ––>
+    <div id="auth_snackbar">Authentication soon available ...</div>
+    <div id="done_snackbar">Your typing data is submitted ...</div>
+    <div id="error_snackbar">Wrong key entered ...</div>
 </body>
 
 </html>

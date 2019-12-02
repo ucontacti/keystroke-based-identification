@@ -13,18 +13,16 @@ function call_train() {
 function call_test() {
     document.getElementById("in_text").style.display = "none";
     test = true;
-}
-
-function send_data() {
-    document.getElementById("in_text").style.display = "none";
-    $.post("/post_send_data");
+    var x = document.getElementById("auth_snackbar");
+    x.className = "show";
+    setTimeout(function () { x.className = x.className.replace("show", ""); }, 3000);
 }
 
 function keyDown(event) {
     var key = String.fromCharCode(event.keyCode).toLowerCase();
     var keycode = event.keyCode;
     var valid =
-        (keycode > 47 && keycode < 58) || // number keys
+        (keycode > 47 && keycode < 58) ||    // number keys
         keycode == 32 || keycode == 13 || // spacebar & return key(s) (if you want to allow carriage returns)
         (keycode > 64 && keycode < 91) || // letter keys
         (keycode > 95 && keycode < 112) || // numpad keys
@@ -36,8 +34,6 @@ function keyDown(event) {
             atDown++;
         }
         else {
-            console.log(atDown);
-            console.log("down issue" + input.charCodeAt(atDown) + " " + key)
             wrong();
         }
     }
@@ -61,12 +57,12 @@ function keyUp(event) {
             atUp++;
         }
         else {
-            console.log(atUp);
-            console.log("up issue " + input.charCodeAt(atUp) + " " + key)
             wrong();
         }
         if (atUp == input.length) {
-            alert("Done!");
+            var x = document.getElementById("done_snackbar");
+            x.className = "show";
+            setTimeout(function () { x.className = x.className.replace("show", ""); }, 5000);
             if (test) {
                 $.post("/post_test", {
                     down_time_data: JSON.stringify(timeDown),
@@ -85,7 +81,9 @@ function keyUp(event) {
 }
 
 function wrong() {
-    alert("Something went wrong!");
+    var x = document.getElementById("error_snackbar");
+    x.className = "show";
+    setTimeout(function(){ x.className = x.className.replace("show", ""); }, 5000);
     reset();
 }
 
