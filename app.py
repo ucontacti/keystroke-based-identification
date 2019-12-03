@@ -35,8 +35,16 @@ def get_post_test():
     result = trainer(json.loads(js_d_data), json.loads(js_u_data))
     return json.dumps({'success':True}), 200, {'ContentType':'application/json'} 
 
+@app.route("/del_data", methods = ['POST'])
+def del_post():
+   ### Delete current data
+    if os.path.exists("Modules/data/time.csv"):
+       print("Done!")
+       os.remove("Modules/data/time.csv")
+    return json.dumps({'success':True}), 200, {'ContentType':'application/json'} 
 
-@app.route('/download/<path:filename>', methods=['GET', 'POST'])
+
+@app.route('/download/<path:filename>', methods=['POST'])
    ### Download the time.csv
 def download(filename):
     uploads = os.path.join(app.root_path, app.config['UPLOAD_FOLDER'])
