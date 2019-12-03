@@ -1,51 +1,53 @@
 import json
 import os
 from Modules.learn import trainer
-from Modules.send_data import save_data
-from flask import Flask, render_template, request, send_from_directory, abort
+from Modules.utils import session_number, add_to_csv
+from flask import Flask, render_template, request, send_from_directory, abort, jsonify
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = "Modules/data"
 
 # TODO: add seesion handling
 
-def add_to_csv(down, up):
-   ### Merge down and up data together and add to time.csv
-   with open('Modules/data/time.csv','a') as fd:
-      for i in range(len(down)):
-         fd.write(str(down[i]) + "," + str(up[i]))
-         if (i != (len(down) - 1)):
-            fd.write(",")
-         else:
-            fd.write("\n")
 
-@app.route("/post_data", methods = ['POST'])
+
+@app.route("/post_data", methods=['POST'])
 def get_post_data():
-   ### Add the key-stroke timings to database
-    print(request.remote_addr)
+    # Add the key-stroke timings to database
     js_d_data = request.form['down_time_data']
     js_u_data = request.form['up_time_data']
     add_to_csv(json.loads(js_d_data), json.loads(js_u_data))
-    return json.dumps({'success':True}), 200, {'ContentType':'application/json'} 
+    return json.dumps({'success': True}), 200, {'ContentType': 'application/json'}
 
-@app.route("/post_test", methods = ['POST'])
+
+@app.route("/post_test", methods=['POST'])
 def get_post_test():
-   ### Authenticate the test
+    # Authenticate the test
     js_d_data = request.form['down_time_data']
     js_u_data = request.form['up_time_data']
     result = trainer(json.loads(js_d_data), json.loads(js_u_data))
-    return json.dumps({'success':True}), 200, {'ContentType':'application/json'} 
+    return json.dumps({'success': True}), 200, {'ContentType': 'application/json'}
 
-@app.route("/del_data", methods = ['POST'])
+
+@app.route("/del_data", methods=['POST'])
 def del_post():
-   ### Delete current data
+    # Delete current data
     if os.path.exists("Modules/data/time.csv"):
-       print("Done!")
-       os.remove("Modules/data/time.csv")
-    return json.dumps({'success':True}), 200, {'ContentType':'application/json'} 
+        os.remove("Modules/data/time.csv")
+    return json.dumps({'success': True}), 200, {'ContentType': 'application/json'}
+
+
+@app.route("/init", methods=['POST'])
+def init_client():
+    # Init client status
+    if os.path.exists("Modules/data/time.csv"):
+        result = session_number()
+    else:
+        result = 0
+    return jsonify(session=result)
 
 
 @app.route('/download/<path:filename>', methods=['POST'])
-   ### Download the time.csv
+# Download the time.csv
 def download(filename):
     uploads = os.path.join(app.root_path, app.config['UPLOAD_FOLDER'])
     try:
@@ -53,10 +55,11 @@ def download(filename):
     except FileNotFoundError:
         abort(404)
 
+
 @app.route("/")
 def index():
-   return render_template("index.html")
+    return render_template("index.html")
 
 
 if __name__ == '__main__':
-   app.run(host= '0.0.0.0', debug='on')
+    app.run(host='0.0.0.0', debug='on')
