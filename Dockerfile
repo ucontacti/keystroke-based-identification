@@ -1,17 +1,19 @@
-FROM ubuntu:16.04
+FROM alpine:latest
 
-RUN apt-get update -y && \
-    apt-get install -y python-pip python-dev
+LABEL Author="Saleh Daghigh"
+LABEL E-mail="ucontacti2012@gmail.com"
 
-# We copy just the requirements.txt first to leverage Docker cache
-COPY ./requirements.txt /app/requirements.txt
+RUN apk add  python3-dev \
+    && pip3 install --upgrade pip
 
 WORKDIR /app
 
-RUN pip install -r requirements.txt
-
 COPY . /app
 
-ENTRYPOINT [ "python" ]
+RUN pip3 install -r requirements.txt
+
+EXPOSE 5000
+
+ENTRYPOINT [ "python3" ]
 
 CMD [ "app.py" ]
