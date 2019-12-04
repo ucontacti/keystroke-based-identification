@@ -7,9 +7,11 @@
 </head>
 
 <body onload="init_variables()">
+    
 
-    <p>Welcome to the keystroke-based page. This product is in the training stage so we need more data. After enough data is gather we will train model and test section will be active. </p>
-    <p>The input should be: <b>micheal mock</b></p>
+    <p id = "sub">Welcome to the keystroke-based page. This product is in the training stage so we need more data. After enough data is gather we will train model and test section will be active. </p>
+    <img src="../static/keystroke_dynamics1.jpg" class = "center">
+    <p id = "inp">The input should be: <b>micheal mock</b></p>
     <p>Keep in mind currently our test is all lower case.</p>
     <p>To gather data we have 10 session each session you have enter the input 5 times.</p>
     <p>After that you can download the data and send it to us.</p>
@@ -20,15 +22,17 @@
             <input type="button" class="button1" onclick="call_res_session()" value="Reset session" />
             <input type="button" class="button2" onclick="call_test()" value="Authenticate" />
             <input type="button" class="button3" onclick="del_data()" value="Delete data" />
-            <input type="button" class="button4" onclick="download_data()" value="Download CSV data" />
+            <input type="button" class="button4" onclick="download_data()" value="Download CSV" />
         </div>
 
         <! –– Input text ––>
         <p id = "p1" style="display:none;"></p>
         <input id="in_text" style="display:none;" type="text" onkeydown="keyDown(event)" onkeyup="keyUp(event)" />
 
+        <hr>
+
         <! –– license text ––>  
-        <p>This work is a collaboration between Saleh Daghigh and Mahdi Paktinat under supervision of Dr. Michael Mock.</p>
+        <p id="work">This work is a collaboration between Saleh Daghigh and Mahdi Paktinat under supervision of Dr. Michael Mock.</p>
 
 
         <! –– Snackbars ––>
