@@ -151,12 +151,14 @@ function wrong() {
 function reset() {
     document.getElementById("in_text").value = "";
     atDown = atUp = 0;
-    timeDown = timeUp = [];
+    timeDown = [];
+    timeUp = [];
 }
 
 function call_res_session() {
     reset();
-    session_time_up = session_time_down = [];
+    session_time_up = [];
+    session_time_down = [];
     try_num = 0;
     document.getElementById("in_text").style.display = "none";
     document.getElementById("p1").style.display = "none";
