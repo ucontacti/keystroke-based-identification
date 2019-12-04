@@ -9,7 +9,6 @@ app.config['UPLOAD_FOLDER'] = "Modules/data"
 # TODO: add seesion handling
 
 
-
 @app.route("/post_data", methods=['POST'])
 def get_post_data():
     # Add the key-stroke timings to database
@@ -50,10 +49,11 @@ def init_client():
 # Download the time.csv
 def download(filename):
     uploads = os.path.join(app.root_path, app.config['UPLOAD_FOLDER'])
-    try:
-        return send_from_directory(directory=uploads, filename=filename)
-    except FileNotFoundError:
-        abort(404)
+    if os.path.exists("Modules/data/time.csv"):
+        return send_from_directory(directory=uploads, filename=filename), 200
+    else:
+        return jsonify(status="file not exist")
+
 
 
 @app.route("/")

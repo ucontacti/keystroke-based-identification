@@ -43,19 +43,20 @@ function del_data() {
 }
 
 function download_data() {
-    var jqxr = $.post("/download/time.csv", function (result) {
-        var blob = new Blob([result]);
-        var link = document.createElement('a');
-        link.href = window.URL.createObjectURL(blob);
-        link.download = "keystroke_data.csv";
-        link.click();
+    $.post("/download/time.csv", function (result) {
+        if (result['status'] != "file not exist") {
+            var blob = new Blob([result]);
+            var link = document.createElement('a');
+            link.href = window.URL.createObjectURL(blob);
+            link.download = "keystroke_data.csv";
+            link.click();
+        }
+        else {
+            var x = document.getElementById("nofile_snackbar");
+            x.className = "show";
+            setTimeout(function () { x.className = x.className.replace("show", ""); }, 3000);
+        }
     });
-    if (jqxr.fail) {
-        var x = document.getElementById("nofile_snackbar");
-        x.className = "show";
-        setTimeout(function () { x.className = x.className.replace("show", ""); }, 3000);
-    }
-
 }
 
 function call_test() {
@@ -124,7 +125,7 @@ function keyUp(event) {
                     });
                 }
                 session += 1;
-                if (session == 10) { 
+                if (session == 10) {
                     alert("You have successfuly finished. You can download and send us the data.");
                 }
                 else {
