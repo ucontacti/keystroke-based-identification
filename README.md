@@ -4,7 +4,7 @@ This code is a cooperation between Saleh Daghigh and Mahdi Paktinat under
 supervision of Dr. Michael Mock from Fraunhofer Institute.
 
 To run:
-1) If you have docker:
+1) If you have docker:  
     ?) sudo docker build -t ucontacti/key-stroke:latest .  
     ?) sudo docker run -p 5000:5000 -it ucontacti/key-stroke
 
