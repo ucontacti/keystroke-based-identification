@@ -1,5 +1,9 @@
 import json
 import os
+import random
+import string
+import requests
+
 from Modules.learn import trainer
 from Modules.utils import session_number, add_to_csv
 from flask import Flask, render_template, request, send_from_directory, abort, jsonify
@@ -26,6 +30,18 @@ def get_post_test():
     result = trainer(json.loads(js_d_data), json.loads(js_u_data))
     return json.dumps({'success': True}), 200, {'ContentType': 'application/json'}
 
+@app.route('/upload/<path:filename>', methods=['POST'])
+# Upload the time.csv
+def upload(filename):
+    # uploads = os.path.join(app.root_path, app.config['UPLOAD_FOLDER'])
+    if os.path.exists("Modules/data/time.csv"):
+        hash_name = "".join( [random.choice(string.ascii_letters) for i in range(6)] )
+        data=open("Modules/data/time.csv", 'rb')
+        requests.put("http://s3-eu-central-1.amazonaws.com/ucontacti/keystroke/" + "time_" + hash_name + ".csv",
+            data=data)
+        return json.dumps({'success':True}), 200, {'ContentType':'application/json'} 
+    else:
+        return jsonify(status="file not exist")
 
 @app.route("/del_data", methods=['POST'])
 def del_post():

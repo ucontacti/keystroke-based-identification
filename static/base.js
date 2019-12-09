@@ -25,21 +25,34 @@ function call_train() {
         test = false;
     }
     else {
-        var r = confirm("You already have 10 sessions, do you want to download and delete?");
+        var r = confirm("You already have 10 sessions, do you want to send us and reset?");
         if (r == true) {
-            download_data();
-            del_data();
+            upload_data();
         }
     }
 }
 
-function del_data() {
-    $.post("/del_data");
-    var x = document.getElementById("del_snackbar");
-    x.className = "show";
-    setTimeout(function () { x.className = x.className.replace("show", ""); }, 3000);
-    session = 0;
-    call_res_session();
+function del_data(confidence) {
+    if (!confidence)
+    {
+        var r = confirm("Are you sure you want to delete your Data?");
+        if (r == true) {
+            $.post("/del_data");
+            var x = document.getElementById("del_snackbar");
+            x.className = "show";
+            setTimeout(function () { x.className = x.className.replace("show", ""); }, 2000);
+            session = 0;
+            call_res_session();
+        }
+    }
+    else{
+        $.post("/del_data");
+        var x = document.getElementById("del_snackbar");
+        x.className = "show";
+        setTimeout(function () { x.className = x.className.replace("show", ""); }, 2000);
+        session = 0;
+        call_res_session();
+    }
 }
 
 function download_data() {
@@ -57,6 +70,27 @@ function download_data() {
             setTimeout(function () { x.className = x.className.replace("show", ""); }, 3000);
         }
     });
+}
+
+function upload_data() {
+    if (session < 10) {
+        alert("You have not finished 10 sessions!");
+    }
+    else {
+        $.post("/upload/time.csv", function (result) {
+            if (result['status'] != "file not exist") {
+                del_data(true);
+                var x = document.getElementById("upload_snackbar");
+                x.className = "show";
+                setTimeout(function () { x.className = x.className.replace("show", ""); }, 3000);
+            }
+            else {
+                var x = document.getElementById("nofile_snackbar");
+                x.className = "show";
+                setTimeout(function () { x.className = x.className.replace("show", ""); }, 3000);
+            }
+        });
+    }
 }
 
 function call_test() {
@@ -126,7 +160,7 @@ function keyUp(event) {
                 }
                 session += 1;
                 if (session == 10) {
-                    alert("You have successfuly finished. You can download and send us the data.");
+                    alert("You have successfuly finished all 10 sessions. You can send us your data now.");
                 }
                 else {
                     alert("You finished the session. It is better to take new session in another time");
@@ -136,7 +170,7 @@ function keyUp(event) {
             reset();
             var x = document.getElementById("done_snackbar");
             x.className = "show";
-            setTimeout(function () { x.className = x.className.replace("show", ""); }, 4000);
+            setTimeout(function () { x.className = x.className.replace("show", ""); }, 2000);
         }
     }
 }
@@ -144,7 +178,7 @@ function keyUp(event) {
 function wrong() {
     var x = document.getElementById("error_snackbar");
     x.className = "show";
-    setTimeout(function () { x.className = x.className.replace("show", ""); }, 4000);
+    setTimeout(function () { x.className = x.className.replace("show", ""); }, 1000);
     reset();
 }
 
