@@ -5,8 +5,8 @@ supervision of Dr. Michael Mock from Fraunhofer Institute.
 
 To run:
 1) If you have docker:  
-    ?) sudo docker build -t ucontacti/key-stroke:latest .  
-    ?) sudo docker run -p 5000:5000 -it ucontacti/key-stroke
+    ?) docker build -t ucontacti/key-stroke:latest .  
+    ?) docker run -p 5000:5000 -it ucontacti/key-stroke
 
 2) If you want to use the python directly,
     1) Make sure you are using python 3.6 or above  
