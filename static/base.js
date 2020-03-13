@@ -9,6 +9,13 @@ var try_num = 0;
 var session_time_down = []
 var session_time_up = []
 
+var atDown_tst = 0
+var atUp_tst = 0
+var timeDown_tst = [];
+var timeUp_tst = [];
+
+
+
 
 function init_variables() {
     $.post("/init", function (result) {
@@ -33,8 +40,7 @@ function call_train() {
 }
 
 function del_data(confidence) {
-    if (!confidence)
-    {
+    if (!confidence) {
         var r = confirm("Are you sure you want to delete your Data?");
         if (r == true) {
             $.post("/del_data");
@@ -45,7 +51,7 @@ function del_data(confidence) {
             call_res_session();
         }
     }
-    else{
+    else {
         $.post("/del_data");
         var x = document.getElementById("del_snackbar");
         x.className = "show";
@@ -94,13 +100,18 @@ function upload_data() {
 }
 
 function call_test() {
-    document.getElementById("in_text").style.display = "none";
-    document.getElementById("p1").style.display = "none";
-    test = true;
-    var x = document.getElementById("auth_snackbar");
-    x.className = "show";
-    setTimeout(function () { x.className = x.className.replace("show", ""); }, 3000);
+    document.getElementById("myModal").style.display = "block";
 }
+
+function close_modal() {
+    document.getElementById("myModal").style.display = "none";
+}
+
+// window.onclick = function (event) {
+//     if (event.target == document.getElementById("myModal")) {
+//         document.getElementById("myModal").style.display = "none";
+//     }
+// }
 
 function keyDown(event) {
     var key = String.fromCharCode(event.keyCode).toLowerCase();
@@ -175,6 +186,7 @@ function keyUp(event) {
     }
 }
 
+
 function wrong() {
     var x = document.getElementById("error_snackbar");
     x.className = "show";
@@ -198,3 +210,83 @@ function call_res_session() {
     document.getElementById("p1").style.display = "none";
     document.getElementById("p2").innerHTML = "session: " + session;
 }
+
+
+function keyDown_tst(event) {
+    var key = String.fromCharCode(event.keyCode).toLowerCase();
+    var keycode = event.keyCode;
+    var valid =
+        (keycode > 47 && keycode < 58) || // number keys
+        keycode == 32 || keycode == 13 || // spacebar & return key(s) (if you want to allow carriage returns)
+        (keycode > 64 && keycode < 91) || // letter keys
+        (keycode > 95 && keycode < 112) || // numpad keys
+        (keycode > 185 && keycode < 193) || // ;=,-./` (in order)
+        (keycode > 218 && keycode < 223); // [\]' (in order)
+    if (valid) {
+        if (input.charAt(atDown_tst) == key) {
+            timeDown_tst.push(performance.now());
+            atDown_tst++;
+        } else {
+            wrong_tst();
+        }
+    }
+}
+
+
+function keyUp_tst(event) {
+    var key = String.fromCharCode(event.keyCode).toLowerCase();
+    var keycode = event.keyCode;
+    var valid =
+        (keycode > 47 && keycode < 58) || // number keys
+        keycode == 32 || keycode == 13 || // spacebar & return key(s) (if you want to allow carriage returns)
+        (keycode > 64 && keycode < 91) || // letter keys
+        (keycode > 95 && keycode < 112) || // numpad keys
+        (keycode > 185 && keycode < 193) || // ;=,-./` (in order)
+        (keycode > 218 && keycode < 223); // [\]' (in order)
+
+    if (valid) {
+        if (input.charAt(atUp_tst) == key) {
+            timeUp_tst.push(performance.now());
+            atUp_tst++;
+        } else {
+            wrong_tst();
+        }
+        if (atUp_tst == input.length) {
+            $.post("/post_test",
+                {
+                    down_time_data: JSON.stringify(timeUp_tst),
+                    up_time_data: JSON.stringify(timeDown_tst)
+                },
+                function (result) {
+                    var final_result = result['result'];
+
+                    for (let index = 1; index <= 3; index++) {
+                        if (final_result % 2 != 1) {
+                            document.getElementById("result".concat(index)).innerHTML = "False";
+                        }
+                        else {
+                            document.getElementById("result".concat(index)).innerHTML = "True";
+                        }
+                        final_result = Math.floor(final_result / 2);
+                    }
+                });
+            reset_tst();
+        }
+    }
+}
+
+function wrong_tst() {
+    var x = document.getElementById("error_snackbar");
+    x.className = "show";
+    setTimeout(function () { x.className = x.className.replace("show", ""); }, 1000);
+    reset_tst();
+}
+
+
+function reset_tst() {
+    document.getElementById("in_text_2").value = "";
+    atDown_tst = atUp_tst = 0;
+    timeDown_tst = [];
+    timeUp_tst = [];
+}
+

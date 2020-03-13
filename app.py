@@ -4,7 +4,7 @@ import random
 import string
 import requests
 
-from Modules.learn import trainer
+from Modules.learn import tester
 from Modules.utils import session_number, add_to_csv
 from flask import Flask, render_template, request, send_from_directory, abort, jsonify
 app = Flask(__name__)
@@ -27,8 +27,8 @@ def get_post_test():
     # Authenticate the test
     js_d_data = request.form['down_time_data']
     js_u_data = request.form['up_time_data']
-    result = trainer(json.loads(js_d_data), json.loads(js_u_data))
-    return json.dumps({'success': True}), 200, {'ContentType': 'application/json'}
+    result = tester(json.loads(js_d_data), json.loads(js_u_data))
+    return jsonify(result=result)
 
 @app.route('/upload/<path:filename>', methods=['POST'])
 # Upload the time.csv

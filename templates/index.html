@@ -17,32 +17,53 @@
     <p>After that you can send it to us or download it for yourself.</p>
     <p id = "p2"></p>
     <! –– Button wrapper ––>
-        <div id="wrapper">
-            <input type="button" class="button1" onclick="call_train()" value="Begin session" />
-            <input type="button" class="button1" onclick="call_res_session()" value="Reset session" />
-            <input type="button" class="button2" onclick="call_test()" value="Authenticate" />
-            <input type="button" class="button3" onclick="del_data(false)" value="Delete data" />
-            <input type="button" class="button4" onclick="download_data()" value="Download CSV" />
-            <input type="button" class="button4" onclick="upload_data()" value="Send and Reset Data" />
-        </div>
+    <div id="wrapper">
+        <input type="button" class="button1" onclick="call_train()" value="Begin session" />
+        <input type="button" class="button1" onclick="call_res_session()" value="Reset session" />
+        <input type="button" class="button2" onclick="call_test()" value="Authenticate" />
+        <input type="button" class="button3" onclick="del_data(false)" value="Delete data" />
+        <input type="button" class="button4" onclick="download_data()" value="Download CSV" />
+        <input type="button" class="button4" onclick="upload_data()" value="Send and Reset Data" />
+    </div>
 
-        <! –– Input text ––>
-        <p id = "p1" style="display:none;"></p>
-        <input id="in_text" style="display:none;" type="text" onkeydown="keyDown(event)" onkeyup="keyUp(event)" />
+    <! –– Input text ––>
+    <p id = "p1" style="display:none;"></p>
+    <input id="in_text" style="display:none;" type="text" onkeydown="keyDown(event)" onkeyup="keyUp(event)" />
 
-        <hr>
+    <hr>
 
-        <! –– license text ––>  
-        <p id="work">This work is a collaboration between Saleh Daghigh and Mahdi Paktinat under supervision of Dr. Michael Mock.</p>
+    <! –– license text ––>  
+    <p id="work">This work is a collaboration between Saleh Daghigh and Mahdi Paktinat under supervision of Dr. Michael Mock.</p>
 
 
-        <! –– Snackbars ––>
-        <div id="auth_snackbar">Authentication soon available ...</div>
-        <div id="done_snackbar">Your typing data is submitted ...</div>
-        <div id="error_snackbar">Wrong key entered ...</div>
-        <div id="del_snackbar">Delet successful ...</div>
-        <div id="nofile_snackbar">File not exist ...</div>
-        <div id="upload_snackbar">Upload successful ...</div>
+    <!-- The Modal -->
+    <div id="myModal" class="modal">
+
+    <!-- Modal content -->
+    <div class="modal-content">
+        <div class="modal-header">
+            <span class="close" onclick="close_modal()">&times;</span>
+            <h2>Modal Header</h2>
+          </div>      
+      <div class="modal-body">
+        <input id="in_text_2" type="text" onkeydown="keyDown_tst(event)" onkeyup="keyUp_tst(event)" />
+        <p>SVM classifier result is </p> <p id="result1"></p>
+        <p>KNN classifier result is </p> <p id="result2"></p>
+        <p>Neural Network classifier result is </p> <p id="result3"></p>
+
+      </div>
+    </div>
+  
+    </div>
+    
+
+    <! –– Snackbars ––>
+    <div id="auth_snackbar">Authentication soon available ...</div>
+    <div id="done_snackbar">Your typing data is submitted ...</div>
+    <div id="error_snackbar">Wrong key entered ...</div>
+    <div id="del_snackbar">Delete successful ...</div>
+    <div id="nofile_snackbar">File not exist ...</div>
+    <div id="upload_snackbar">Upload successful ...</div>
 
 </body>
 
