@@ -263,9 +263,11 @@ function keyUp_tst(event) {
                     for (let index = 1; index <= 3; index++) {
                         if (final_result % 2 != 1) {
                             document.getElementById("result".concat(index)).innerHTML = "False";
+                            document.getElementById("result".concat(index)).style.color = "red"
                         }
                         else {
                             document.getElementById("result".concat(index)).innerHTML = "True";
+                            document.getElementById("result".concat(index)).style.color = "green"
                         }
                         final_result = Math.floor(final_result / 2);
                     }

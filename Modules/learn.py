@@ -6,15 +6,18 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F#our class must extend nn.Module
 
-class MyClassifier(nn.Module):
-    def __init__(self):
-        super(MyClassifier,self).__init__()
+class NNClassifier(nn.Module):
+    def __init__(self, input_size):
+        super(NNClassifier,self).__init__()
         #Our network consists of 3 layers. 1 input, 1 hidden and 1 output layer
         #This applies Linear transformation to input data. 
-        self.fc1 = nn.Linear(34,100)
-        
+        self.fc1 = nn.Linear(input_size,100)
+
         #This applies linear transformation to produce output data
-        self.fc2 = nn.Linear(100,2)
+        self.fc2 = nn.Linear(100,100)
+
+        #This applies linear transformation to produce output data
+        self.fc3 = nn.Linear(100,2)
         
     #This must be implemented
     def forward(self,x):
@@ -39,34 +42,44 @@ class MyClassifier(nn.Module):
                 ans.append(1)
         return torch.tensor(ans)
 
-
 if torch.cuda.is_available():
     device = torch.device('cuda')
 else:
     device = torch.device('cpu')
 
 # models loader
-nn_model = MyClassifier().to(device)
+nn_model = NNClassifier(34).to(device)
 nn_model.load_state_dict(torch.load("Modules/nn_model.pkl"))
 svm_model = joblib.load('Modules/svm_model.pkl')
 knn_model = joblib.load('Modules/svm_model.pkl')
 
 def tester(data_up, data_down):
-    
-    
     new_data = []
     for i in range(len(data_up) - 1):
         new_data.append(data_up[i] - data_down[i])
         new_data.append(data_down[i+1] - data_down[i])
         new_data.append(data_down[i+1] - data_up[i])
     new_data.append(data_up[-1] - data_down[-1])
-    new_data = pd.DataFrame([new_data])
+    new_data_1gram = pd.DataFrame([new_data])
+    new_data = []
+    for i in range(len(data_up)):
+        new_data.append(data_up[i] - data_down[i])
+        if (i+1) < len(data_up):
+            new_data.append(data_down[i+1] - data_down[i])
+            new_data.append(data_down[i+1] - data_up[i])
+        if (i+2) < len(data_up):
+            new_data.append(data_down[i+2] - data_down[i])
+            new_data.append(data_down[i+2] - data_up[i])
+        if (i+3) < len(data_up):
+            new_data.append(data_down[i+3] - data_down[i])
+            new_data.append(data_down[i+3] - data_up[i])
+    new_data_3gram = pd.DataFrame([new_data])
     result = 0
-    if not svm_model.predict(new_data):
+    if not svm_model.predict(new_data_3gram):
         result += 2 ** 0
-    if not knn_model.predict(new_data):
+    if not knn_model.predict(new_data_3gram):
         result += 2 ** 1
-    if not nn_model.predict(torch.from_numpy(new_data.to_numpy()).type(torch.FloatTensor).to(device)):
+    if not nn_model.predict(torch.from_numpy(new_data_1gram.to_numpy()).type(torch.FloatTensor).to(device)):
         result += 2 ** 2
     
     # print("Our test result: " + str(result))
