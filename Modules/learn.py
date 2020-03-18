@@ -49,9 +49,9 @@ else:
 
 # models loader
 nn_model = NNClassifier(34).to(device)
-nn_model.load_state_dict(torch.load("Modules/nn_model.pkl"))
+nn_model.load_state_dict(torch.load("Modules/nn_model.pkl", map_location=device))
 svm_model = joblib.load('Modules/svm_model.pkl')
-knn_model = joblib.load('Modules/svm_model.pkl')
+knn_model = joblib.load('Modules/knn_model.pkl')
 
 def tester(data_up, data_down):
     new_data = []

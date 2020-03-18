@@ -1,19 +1,16 @@
-FROM alpine:latest
+FROM python:3.7
 
 LABEL Author="Saleh Daghigh"
 LABEL E-mail="ucontacti2012@gmail.com"
-
-RUN apk add  python3-dev \
-    && pip3 install --upgrade pip
 
 WORKDIR /app
 
 COPY . /app
 
-RUN pip3 install -r requirements.txt
+ADD app.py /
+
+RUN pip install -r requirements.txt
 
 EXPOSE 5000
 
-ENTRYPOINT [ "python3" ]
-
-CMD [ "app.py" ]
+CMD [ "python", "./app.py" ]

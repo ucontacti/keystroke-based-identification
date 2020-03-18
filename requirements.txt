@@ -1,3 +1,7 @@
 Flask==1.0
 Requests==2.22
 numpy
+scikit-learn
+pandas
+torch
+
