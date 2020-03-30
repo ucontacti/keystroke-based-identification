@@ -4,14 +4,13 @@ import random
 import string
 import requests
 
-from Modules.learn import tester
+from Modules.model_access import tester
 from Modules.utils import session_number, add_to_csv
 from flask import Flask, render_template, request, send_from_directory, abort, jsonify
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = "Modules/data"
 
 # TODO: add seesion handling
-
 
 @app.route("/post_data", methods=['POST'])
 def get_post_data():
@@ -31,9 +30,8 @@ def get_post_test():
     return jsonify(result=result)
 
 @app.route('/upload/<path:filename>', methods=['POST'])
-# Upload the time.csv
 def upload(filename):
-    # uploads = os.path.join(app.root_path, app.config['UPLOAD_FOLDER'])
+    # Upload the time.csv
     if os.path.exists("Modules/data/time.csv"):
         hash_name = "".join( [random.choice(string.ascii_letters) for i in range(6)] )
         data=open("Modules/data/time.csv", 'rb')
@@ -62,8 +60,8 @@ def init_client():
 
 
 @app.route('/download/<path:filename>', methods=['POST'])
-# Download the time.csv
 def download(filename):
+    # Download the time.csv
     uploads = os.path.join(app.root_path, app.config['UPLOAD_FOLDER'])
     if os.path.exists("Modules/data/time.csv"):
         return send_from_directory(directory=uploads, filename=filename), 200
@@ -75,7 +73,6 @@ def download(filename):
 @app.route("/")
 def index():
     return render_template("index.html")
-
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', debug='on')

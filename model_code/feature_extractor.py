@@ -1,9 +1,12 @@
+# Feature Extraction
 import pandas as pd
 import numpy as np
 
 files = ['keystroke_data-1.csv', 'keystroke_data-2.csv',
          'keystroke_data-3.csv', 'keystroke_data-4.csv', 'keystroke_data-5.csv']
 df_list = []
+
+# Genuine user data
 for file_name in files:
     data = pd.read_csv('Data/' + file_name, header=None)
 
@@ -45,6 +48,7 @@ files = [
 ]
 df_list = []
 counter = 1
+# Imposter user data
 for file_name in files:
     data = pd.read_csv('Data/' + file_name, header=None)
 

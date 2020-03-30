@@ -1,12 +1,9 @@
-# In[1]: Headerimport matplotlib.pyplot as plt
-from sklearn.metrics import accuracy_score  #for accuracy_score
+# from sklearn.metrics import accuracy_score  #for accuracy_score
 
-
-
-# In[3]: Read data and split train and test data
+# In[1]: Read data and split train/test
 import numpy as np 
 import pandas as pd
-from sklearn.model_selection import train_test_split #for split the data
+from sklearn.model_selection import train_test_split
 
 df_features=pd.read_csv("features/dataset_3gram.csv")
 # Drop some data
@@ -25,7 +22,7 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.20, random
 
 
 
-# In[]: Plot Data
+# In[2]: Plot Data
 import matplotlib.pyplot as plt
 df_features=pd.read_csv("features/dataset_3gram.csv")
 fig, axes = plt.subplots(nrows=3, ncols=3)
@@ -69,31 +66,27 @@ plt.subplots_adjust(top=0.92, bottom=0.12, left=0.10, right=0.95, hspace=0.25, w
 plt.show()
 
 
-
 # In[3]: Feature Selection
 from sklearn.feature_selection import SelectKBest
 from sklearn.feature_selection import f_classif
 
-#apply SelectKBest class to extract top 10 best features
 bestfeatures = SelectKBest(score_func=f_classif, k=10)
 fit = bestfeatures.fit(X_train,y_train)
 dfscores = pd.DataFrame(fit.scores_)
 dfcolumns = pd.DataFrame(X_train.columns)
-#concat two dataframes for better visualization 
 featureScores = pd.concat([dfcolumns,dfscores],axis=1)
 featureScores.columns = ['Specs','Score']
 print('-------------- Univariate Selection Feature Selection----------------------------')
-print(featureScores.nlargest(10,'Score'))  #print 10 best features
-#plot graph of feature importances for better visualization
+print(featureScores.nlargest(10,'Score'))
 feat_importances = pd.Series(fit.scores_, index=X_train.columns)
 feat_importances.nlargest(10).plot(kind='barh', title="Univariate Selection Feature Selection")
 plt.show()
 
 
-# In[2]: Calculate eer rate
-from sklearn.metrics import make_scorer, roc_curve #for eer
-from scipy.optimize import brentq #for eer
-from scipy.interpolate import interp1d #for eer
+# In[4]: Calculate eer eror rate
+from sklearn.metrics import make_scorer, roc_curve
+from scipy.optimize import brentq 
+from scipy.interpolate import interp1d
 def calculate_eer(y_true, y_score):
     fpr, tpr, thresholds = roc_curve(y_true, y_score, pos_label=1)
     eer = brentq(lambda x : 1. - x - interp1d(fpr, tpr)(x), 0., 1.)
@@ -105,6 +98,8 @@ print('\n\n---------------------KNN Classifier-------------------------------')
 from sklearn.metrics import accuracy_score
 from sklearn.neighbors import KNeighborsClassifier
 
+
+# Calculate most effective feature
 accuracy_list = []
 err_list = []
 for i in range(len(X_train.columns)):
@@ -128,34 +123,36 @@ for i in range(len(X_train.columns)):
 dfscores = pd.DataFrame(err_list)
 dfcolumns = pd.DataFrame(X_train.columns)
 featureScores = pd.concat([dfcolumns,dfscores],axis=1)
-featureScores.columns = ['Specs','Score']  #naming the dataframe columns
+featureScores.columns = ['Specs','Score']
 print('--------------Feature Selection by EER----------------------------')
-print(featureScores.nlargest(10,'Score'))  #print 10 best features
+print(featureScores.nlargest(10,'Score'))
 feat_importances = pd.Series(err_list, index=X_train.columns)
 feat_importances.nlargest(10).plot(kind='barh', title="Feature Importance by Masking")
 plt.show()
 
-
-
+# Train and Test
 knn_model = KNeighborsClassifier(metric='manhattan').fit(X_train, y_train)
 prediction_rm=knn_model.predict(X_test)
 print('The accuracy of the KNN is ', round(accuracy_score(prediction_rm, y_test)*100,2))
 print('The EER value of the KNN is ', round(calculate_eer(prediction_rm, y_test)*100,2))
 
-
-from sklearn.model_selection import KFold #for K-fold cross validation
-from sklearn.model_selection import cross_val_score #score evaluation
-kfold = KFold(n_splits=10) # k=10, split the data into 10 equal parts
+# Cross validation
+from sklearn.model_selection import KFold
+from sklearn.model_selection import cross_val_score
+kfold = KFold(n_splits=10)
 result_rm=cross_val_score(knn_model, X, y, cv=10, scoring='accuracy')
 print('The cross validated score of the KNN is ',round(result_rm.mean()*100,2))
 
+# Export model
 import joblib
 joblib.dump(knn_model, 'model/knn_model.pkl', compress=9)
 joblib.dump(knn_model, '../Modules/knn_model.pkl', compress=9)
 
-# In[4]: SVM classifier
+# In[6]: SVM classifier
 print('\n\n--------------SVM Classifier----------------------------')
 from sklearn import svm
+
+# Calculate most effective feature
 accuracy_list = []
 err_list = []
 for i in range(len(X_train.columns)):
@@ -168,33 +165,35 @@ for i in range(len(X_train.columns)):
 dfscores = pd.DataFrame(accuracy_list)
 dfcolumns = pd.DataFrame(X_train.columns)
 featureScores = pd.concat([dfcolumns,dfscores],axis=1)
-featureScores.columns = ['Specs','Score']  #naming the dataframe columns
+featureScores.columns = ['Specs','Score']
 print('--------------Feature Selection by accuracy----------------------------')
-print(featureScores.nsmallest(10,'Score'))  #print 10 best features
+print(featureScores.nsmallest(10,'Score'))
 
 dfscores = pd.DataFrame(err_list)
 dfcolumns = pd.DataFrame(X_train.columns)
 featureScores = pd.concat([dfcolumns,dfscores],axis=1)
-featureScores.columns = ['Specs','Score']  #naming the dataframe columns
+featureScores.columns = ['Specs','Score']
 print('--------------Feature Selection by eer----------------------------')
-print(featureScores.nlargest(10,'Score'))  #print 10 best features
+print(featureScores.nlargest(10,'Score'))
 
+# Train and Test
 svm_model = svm.SVC(kernel='rbf', gamma='auto').fit(X_train, y_train)
 prediction_rm=svm_model.predict(X_test)
 print('The accuracy: ', round(accuracy_score(prediction_rm, y_test)*100,2))
 print('The EER value:', round(calculate_eer(prediction_rm, y_test)*100,2))
     
-
-kfold = KFold(n_splits=10) # k=10, split the data into 10 equal parts
+# Cross validation
+kfold = KFold(n_splits=10)
 result_rm=cross_val_score(svm_model, X, y, cv=10,scoring='accuracy')
 print('The cross validated score for SVM Classifier is:',round(result_rm.mean()*100,2))
 
+# Export Model
 joblib.dump(svm_model, 'model/svm_model.pkl', compress=9)
 joblib.dump(svm_model, '../Modules/svm_model.pkl', compress=9)
 
 
 
-# In[]: Neural Network
+# In[7]: Neural Network
 print('\n\n-----------------Neural Network Classifier------------------------')
 
 df_features=pd.read_csv("features/dataset_1gram.csv")
@@ -231,32 +230,28 @@ import torch.nn.functional as F
 class NNClassifier(nn.Module):
     def __init__(self, input_size):
         super(NNClassifier,self).__init__()
-        #Our network consists of 3 layers. 1 input, 1 hidden and 1 output layer
-        #This applies Linear transformation to input data. 
+        # Our network consists of 3 layers. 1 input, 2 hidden and 1 output layer
+        # This applies Linear transformation to input data. 
         self.fc1 = nn.Linear(input_size,100)
-
-        #This applies linear transformation to produce output data
         self.fc2 = nn.Linear(100,100)
-
-        #This applies linear transformation to produce output data
+        # This applies linear transformation to produce output data
         self.fc3 = nn.Linear(100,2)
         
-    #This must be implemented
     def forward(self,x):
-        #Output of the first layer
+        # Output of the first layer
         x = self.fc1(x)
-        #Activation function is Relu. Feel free to experiment with this
+        # Activation function is Relu. Feel free to experiment with this
         x = torch.tanh(x)
-        #This produces output
+        # This produces output
         x = self.fc2(x)
         return x
         
-    #This function takes an input and predicts the class, (0 or 1)        
+    # This function takes an input and predicts the class, (0 or 1)        
     def predict(self,x):
-        #Apply softmax to output. 
+        # Apply softmax to output. 
         pred = F.softmax(self.forward(x),dim=1)
         ans = []
-        #Pick the class with maximum weight
+        # Pick the class with maximum weight
         for t in pred:
             if t[0]>t[1]:
                 ans.append(0)
@@ -264,34 +259,36 @@ class NNClassifier(nn.Module):
                 ans.append(1)
         return torch.tensor(ans)
 
-#Initialize the model        
 nn_model = NNClassifier(X_test.shape[1]).to(device)
-#Define loss criterion
+# Define loss criterion
 criterion = nn.CrossEntropyLoss()
-#Define the optimizer
+# Define the optimizer
 optimizer = torch.optim.Adam(nn_model.parameters(), lr=0.01)
 
-#Number of epochs
+# Number of epochs
 epochs = 10000
-#List to store losses
+# List to store losses
 losses = []
+# Train Model
 for i in range(epochs):
-    #Precit the output for Given input
+    # Precit the output for Given input
     y_pred = nn_model.forward(X_train)
-    #Compute Cross entropy loss
+    # Compute Cross entropy loss
     loss = criterion(y_pred,y_train)
-    #Add loss to the list
+    # Add loss to the list
     losses.append(loss.item())
-    #Clear the previous gradients
+    # Clear the previous gradients
     optimizer.zero_grad()
-    #Compute gradients
+    # Compute gradients
     loss.backward()
-    #Adjust weights
+    # Adjust weights
     optimizer.step()
 
+# Test
 print('The accuracy of the Neural Network is', round(accuracy_score(nn_model.predict(X_test), y_test)*100,2))
 print('The EER value of the Neural Network is', round(calculate_eer(nn_model.predict(X_test), y_test)*100,2))
 
+# Export Model
 torch.save(nn_model.state_dict(), "model/nn_model.pkl")
 torch.save(nn_model.state_dict(), "../Modules/nn_model.pkl")
 

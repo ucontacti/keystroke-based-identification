@@ -6,35 +6,23 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F#our class must extend nn.Module
 
+# Load one time the Network in initialization
 class NNClassifier(nn.Module):
     def __init__(self, input_size):
         super(NNClassifier,self).__init__()
-        #Our network consists of 3 layers. 1 input, 1 hidden and 1 output layer
-        #This applies Linear transformation to input data. 
         self.fc1 = nn.Linear(input_size,100)
-
-        #This applies linear transformation to produce output data
         self.fc2 = nn.Linear(100,100)
-
-        #This applies linear transformation to produce output data
         self.fc3 = nn.Linear(100,2)
         
-    #This must be implemented
     def forward(self,x):
-        #Output of the first layer
         x = self.fc1(x)
-        #Activation function is Relu. Feel free to experiment with this
         x = torch.tanh(x)
-        #This produces output
         x = self.fc2(x)
         return x
         
-    #This function takes an input and predicts the class, (0 or 1)        
     def predict(self,x):
-        #Apply softmax to output. 
         pred = F.softmax(self.forward(x),dim=1)
         ans = []
-        #Pick the class with maximum weight
         for t in pred:
             if t[0]>t[1]:
                 ans.append(0)
@@ -47,7 +35,7 @@ if torch.cuda.is_available():
 else:
     device = torch.device('cpu')
 
-# models loader
+# Load all models
 nn_model = NNClassifier(34).to(device)
 nn_model.load_state_dict(torch.load("Modules/nn_model.pkl", map_location=device))
 svm_model = joblib.load('Modules/svm_model.pkl')
@@ -82,8 +70,8 @@ def tester(data_up, data_down):
     if not nn_model.predict(torch.from_numpy(new_data_1gram.to_numpy()).type(torch.FloatTensor).to(device)):
         result += 2 ** 2
     
+    ## test case for geniune user and imposter user
     # print("Our test result: " + str(result))
-
     # test_true = [66,404,338,66,113,47,122,136,14,54,68,14,121,89,-32,100,90,-10,88,67,-21,100,156,56,90,158,68,101,112,11,78,68,-10,78]
     # test_true = pd.DataFrame([test_true])
     # result = 0
