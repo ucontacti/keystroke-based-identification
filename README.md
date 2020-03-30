@@ -1,5 +1,5 @@
 # Keystroke-based Identification
-Python code for collecting and authenticating user based on their keystroke patterns.
+Python code for collecting and authenticating a user based on their keystroke patterns.
 
 
 ## Running
