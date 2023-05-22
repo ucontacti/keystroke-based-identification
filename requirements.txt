@@ -1,5 +1,5 @@
 Flask==1.0
-Requests==2.22
+Requests==2.31.0
 numpy
 scikit-learn
 pandas
